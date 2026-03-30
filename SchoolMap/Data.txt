@@ -1,0 +1,43 @@
+Letters
+A. UNIVERSITY CHAPEL --- Nodes: x: 490 y: 310
+B. PERPETUA SOCORRO HALL/ADMIN BLDG. --- Nodes: x: 510 y: 290
+C. FOUNDER'S STATUE --- Nodes: x: 480 y: 300
+D. COVERED WALK --- Nodes: x: 300 y: 220
+E. ROTONDA / SAINT ANTHONY PADUA STATUE --- Nodes: x: 490 y: 280
+F. JUNIOR HIGH SCHOOL BUILDING --- Nodes: x: 460 y: 270
+G. OPEN TENNIS COURT --- Nodes: x: 420 y: 260
+H. ANNEX JUNIOR H/S BUILDING --- Nodes: x: 390 y: 240
+I. MINI-GRANDSTAND 1 --- Nodes: x: 370 y: 220
+J. OPEN COURT PARKING AREA --- Nodes: x: 350 y: 230
+K. MINI PARK --- Nodes: x: 230 y: 190
+L. MONTESSORI BUILDING --- Nodes: x: 410 y: 190
+M. GRADUATE SCHOOL BUILDING --- Nodes: x: 440 y: 210
+N. MINI HOTEL --- Nodes: x: 470 y: 230
+O. DORMITORY --- Nodes: x: 500 y: 240
+P. PARENTS WAITING AREA --- Nodes: x: 330 y: 210
+Q. DR. ANDRES C. GONZALES BUILDING --- Nodes: x: 310 y: 200
+R. SENIOR H/S BUILDING --- Nodes: x: 290 y: 190
+S. UNIVERSITY FORUM --- Nodes: x: 250 y: 240
+T. MAINTENANCE AREA --- Nodes: x: 220 y: 260
+U. SWIMMING POOL --- Nodes: x: 190 y: 240
+V. BASKETBALL COURT 1 --- Nodes: x: 200 y: 220
+W. TWIN TENNIS COURT --- Nodes: x: 210 y: 200
+X. OVAL AND FOOTBALL FIELD --- Nodes: x: 140 y: 220
+Y. MINI GRANDSTAND 2 --- Nodes: x: 110 y: 260
+Z. GUARD HOUSE 2 --- Nodes: x: 90 y: 250
+
+Numbers
+1. GUARD HOUSE 1 --- Nodes: x: 490 y: 320
+2. DR. SANTIAGO ORTEGA BUILDING --- Nodes: x: 210 y: 160
+3. SGO CAFETERIA --- Nodes: x: 220 y: 170
+4. FIRING RANGE --- Nodes: x: 230 y: 130
+5. MINI TREE PARK --- Nodes: x: 250 y: 110
+6. GREGORIA SANCHEZ HALL --- Nodes: x: 280 y: 120
+7. MINI FOOTBALL FIELD --- Nodes: x: 270 y: 150
+8. MARITIME BUILDING --- Nodes: x: 330 y: 140
+9. BASKETBALL COURT 2 --- Nodes: x: 340 y: 160
+10. LANDSHIP --- Nodes: x: 370 y: 170
+11. PC COLLECTION BUILDING --- Nodes: x: 460 y: 340
+12. GATE 1 --- Nodes: x: 490 y: 350
+13. GATE 3 --- Nodes: x: 70 y: 250
+14. BROADCASTING BUILDING --- Nodes: x: 160 y: 170

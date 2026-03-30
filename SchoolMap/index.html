@@ -48,127 +48,19 @@
   </div>
 
   <div class="controls">
-    <button onclick="calculateAndDraw('Gate', 'Gym')">Find Path: Gate to Gym</button>
-    <button onclick="calculateAndDraw('Library', 'Cafeteria')">Find Path: Library to Cafeteria</button>
+    <div class="search-row">
+      <label for="from-input">From</label>
+      <input id="from-input" list="location-list" placeholder="Start location" />
+      <label for="to-input">To</label>
+      <input id="to-input" list="location-list" placeholder="End location" />
+      <button id="find-route-btn">Find Route</button>
+    </div>
+
+    <datalist id="location-list"></datalist>
+
     <p id="output"></p>
   </div>
 
-  <script>
-    // 1. The Map Data (from previous step)
-    const schoolMap = {
-      'Gate': { 'Library': 50, 'Cafeteria': 80 },
-      'Library': { 'Gate': 50, 'Main Hall': 30, 'Cafeteria': 40 },
-      'Cafeteria': { 'Gate': 80, 'Library': 40, 'Gym': 60 },
-      'Main Hall': { 'Library': 30, 'Gym': 20 },
-      'Gym': { 'Cafeteria': 60, 'Main Hall': 20 }
-    };
-
-    // 2. The Coordinates (X, Y in pixels relative to your 600x400 canvas)
-    // YOU WILL NEED TO ADJUST THESE TO MATCH YOUR ACTUAL MAP IMAGE
-    const nodeCoords = {
-      'Gate': { x: 50, y: 350 },
-      'Library': { x: 200, y: 200 },
-      'Cafeteria': { x: 350, y: 300 },
-      'Main Hall': { x: 300, y: 80 },
-      'Gym': { x: 500, y: 150 }
-    };
-
-    // 3. Dijkstra's Algorithm (Core Logic)
-    function findShortestPath(graph, startNode, endNode) {
-      let distances = {};
-      let parents = {};
-      let visited = new Set();
-
-      for (let node in graph) {
-        distances[node] = Infinity;
-        parents[node] = null;
-      }
-      distances[startNode] = 0;
-
-      function getLowestDistanceNode(distances, visited) {
-        let lowest = null;
-        for (let node in distances) {
-          if (!visited.has(node)) {
-            if (lowest === null || distances[node] < distances[lowest]) {
-              lowest = node;
-            }
-          }
-        }
-        return lowest;
-      }
-
-      let currentNode = getLowestDistanceNode(distances, visited);
-
-      while (currentNode !== null) {
-        let distance = distances[currentNode];
-        let neighbors = graph[currentNode];
-
-        for (let neighbor in neighbors) {
-          let newDistance = distance + neighbors[neighbor];
-          if (newDistance < distances[neighbor]) {
-            distances[neighbor] = newDistance;
-            parents[neighbor] = currentNode;
-          }
-        }
-        visited.add(currentNode);
-        currentNode = getLowestDistanceNode(distances, visited);
-      }
-
-      let path = [];
-      let currentStep = endNode;
-      while (currentStep !== null) {
-        path.unshift(currentStep);
-        currentStep = parents[currentStep];
-      }
-
-      if (path[0] !== startNode) return { distance: Infinity, path: [] };
-      return { distance: distances[endNode], path: path };
-    }
-
-    // 4. Visual Drawing Logic
-    function drawPath(pathArray) {
-      const canvas = document.getElementById('map-canvas');
-      const ctx = canvas.getContext('2d');
-
-      // Clear any previous lines
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-      if (pathArray.length === 0) return;
-
-      // Line styling
-      ctx.strokeStyle = '#e74c3c'; // Red line
-      ctx.lineWidth = 3;
-      ctx.lineCap = 'round';
-      ctx.lineJoin = 'round';
-
-      ctx.beginPath();
-
-      // Loop through the path and draw lines between coordinates
-      for (let i = 0; i < pathArray.length; i++) {
-        const locationName = pathArray[i];
-        const coords = nodeCoords[locationName];
-
-        if (i === 0) {
-          ctx.moveTo(coords.x, coords.y); // Start point
-        } else {
-          ctx.lineTo(coords.x, coords.y); // Draw to next point
-        }
-      }
-      
-      ctx.stroke(); // Render the line
-    }
-
-    // 5. Tie it all together
-    function calculateAndDraw(start, end) {
-      const result = findShortestPath(schoolMap, start, end);
-      
-      // Update the text output
-      document.getElementById('output').innerText = 
-        `Distance: ${result.distance}m | Path: ${result.path.join(' -> ')}`;
-
-      // Draw the visual line
-      drawPath(result.path);
-    }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
