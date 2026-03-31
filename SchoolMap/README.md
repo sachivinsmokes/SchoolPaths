@@ -98,6 +98,9 @@ This allows the system to compute the **shortest path visually and efficiently**
   </tr>
 </table>
 
+## ⬇️ To Access The Page 
+copy url: https://kabonkaru.github.io/SchoolPaths/SchoolMap/
+
 ## 🚀 Installation
 
 To run this project locally:
