@@ -53,12 +53,13 @@ const nodeCoords = {
   'PC COLLECTION BUILDING': { x: 460, y: 340 },
   'GATE 1': { x: 490, y: 350 },
   'GATE 3': { x: 70, y: 250 },
-  'THE HUB': { x: 160, y: 170 }
+  'THE HUB': { x: 150, y: 170 }
 };
 
 // This is for the fixed campus path connections
 // PLS FIX YUNG DISTANCES, HINDI PA TO ACTUAL DATA, SAMPLE LANG TO
 const pathEdges = [
+  ['GATE 1', 'GATE 3', 900],
   ['GATE 1', 'UNIVERSITY CHAPEL', 40],
   ['UNIVERSITY CHAPEL', 'PERPETUA SOCORRO HALL/ADMIN BLDG.', 20],
   ['UNIVERSITY CHAPEL', "FOUNDER'S STATUE", 15],
@@ -184,6 +185,24 @@ function findShortestPath(graph, startNode, endNode) {
   return { distance: distances[endNode], path: path };
 }
 
+// This is for drawing node markers
+function drawNodes(selectedNode = null) {
+  const canvas = document.getElementById('map-canvas');
+  const ctx = canvas.getContext('2d');
+
+  for (const node in nodeCoords) {
+    const coords = nodeCoords[node];
+    if (!coords) continue;
+
+    ctx.beginPath();
+    ctx.arc(coords.x, coords.y, node === selectedNode ? 7 : 5, 0, Math.PI * 2);
+    ctx.fillStyle = node === selectedNode ? '#f1c40f' : '#27ae60';
+    ctx.fill();
+
+    // Optional text label on hover/click from click handler; skip for cleanliness
+  }
+}
+
 // This is for drawing the path on canvas
 function drawPath(pathArray) {
   const canvas = document.getElementById('map-canvas');
@@ -191,29 +210,53 @@ function drawPath(pathArray) {
 
   ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-  if (!pathArray.length) return;
+  if (pathArray.length) {
+    ctx.strokeStyle = '#e74c3c';
+    ctx.lineWidth = 3;
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
 
+    ctx.beginPath();
 
-  // cutomize yung line style dito, pwede niyo baguhin yung color, width, at iba 
-  // pang properties para mas maganda yung path visualization
-  ctx.strokeStyle = '#e74c3c';
-  ctx.lineWidth = 3;
-  ctx.lineCap = 'round';
-  ctx.lineJoin = 'round';
-
-  ctx.beginPath();
-
-  for (let i = 0; i < pathArray.length; i++) {
-    const coords = nodeCoords[pathArray[i]];
-    if (!coords) continue;
-    if (i === 0) {
-      ctx.moveTo(coords.x, coords.y);
-    } else {
-      ctx.lineTo(coords.x, coords.y);
+    for (let i = 0; i < pathArray.length; i++) {
+      const coords = nodeCoords[pathArray[i]];
+      if (!coords) continue;
+      if (i === 0) {
+        ctx.moveTo(coords.x, coords.y);
+      } else {
+        ctx.lineTo(coords.x, coords.y);
+      }
     }
+
+    ctx.stroke();
   }
 
-  ctx.stroke();
+  drawNodes();
+}
+
+// Tooltip helpers
+function showTooltip(htmlContent, x, y) {
+  const tooltip = document.getElementById('hover-tooltip');
+  if (!tooltip) return;
+
+  tooltip.innerHTML = htmlContent;
+  tooltip.style.display = 'block';
+  tooltip.style.left = `${x + 12}px`;
+  tooltip.style.top = `${y + 12}px`;
+}
+
+function hideTooltip() {
+  const tooltip = document.getElementById('hover-tooltip');
+  if (!tooltip) return;
+  tooltip.style.display = 'none';
+}
+
+function getNodeTooltipContent(node) {
+  const coords = nodeCoords[node] || { x: 0, y: 0 };
+  const graph = Object.keys(pathGraph).length ? pathGraph : schoolMap;
+  const connections = graph[node] ? Object.entries(graph[node]).map(([to, d]) => `${to} (${d}m)`) : [];
+  const connectionText = connections.length ? connections.join(', ') : 'None';
+  return `<strong>${node}</strong><br/>x: ${coords.x}, y: ${coords.y}<br/>Connected to: ${connectionText}`;
 }
 
 // This is for drawing a direct fallback path when graph path is missing
@@ -235,6 +278,8 @@ function drawDirectPath(start, end) {
   ctx.moveTo(startCoords.x, startCoords.y);
   ctx.lineTo(endCoords.x, endCoords.y);
   ctx.stroke();
+
+  drawNodes();
 }
 
 // This is for calculating straight-line distance
@@ -268,6 +313,14 @@ function setupSearchControls() {
   populateLocationList();
   pathGraph = buildFixedGraph();
 
+  // Draw all nodes on initial load to verify coordinates
+  const mapCanvas = document.getElementById('map-canvas');
+  if (mapCanvas) {
+    const ctx = mapCanvas.getContext('2d');
+    ctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
+    drawNodes();
+  }
+
   const btn = document.getElementById('find-route-btn');
   if (!btn) return;
 
@@ -287,6 +340,79 @@ function setupSearchControls() {
 
     calculateAndDraw(from, to);
   });
+
+  const mapCanvas2 = document.getElementById('map-canvas');
+  if (mapCanvas2) {
+    let hoverNode = null;
+
+    function findNodeAt(x, y, radius = 10) {
+      for (const node in nodeCoords) {
+        const coords = nodeCoords[node];
+        const distance = Math.hypot(coords.x - x, coords.y - y);
+        if (distance <= radius) {
+          return node;
+        }
+      }
+      return null;
+    }
+
+    mapCanvas2.addEventListener('mousemove', (event) => {
+      const rect = mapCanvas2.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const node = findNodeAt(x, y);
+
+      if (node) {
+        if (hoverNode !== node) {
+          hoverNode = node;
+          drawNodes(node);
+        }
+        showTooltip(getNodeTooltipContent(node), event.clientX, event.clientY);
+      } else {
+        if (hoverNode !== null) {
+          hoverNode = null;
+          drawNodes();
+        }
+        hideTooltip();
+      }
+    });
+
+    mapCanvas2.addEventListener('click', (event) => {
+      const rect = mapCanvas2.getBoundingClientRect();
+      const x = event.clientX - rect.left;
+      const y = event.clientY - rect.top;
+      const clickedNode = findNodeAt(x, y);
+
+      if (clickedNode) {
+        document.getElementById('output').innerText =
+          `Clicked Node: ${clickedNode} (x:${Math.round(x)}, y:${Math.round(y)})`;
+        drawPath([]);
+        drawNodes(clickedNode);
+        showTooltip(getNodeTooltipContent(clickedNode), event.clientX, event.clientY);
+
+        const fromInput = document.getElementById('from-input');
+        const toInput = document.getElementById('to-input');
+
+        if (!fromInput.value.trim()) {
+          fromInput.value = clickedNode;
+        } else if (!toInput.value.trim()) {
+          toInput.value = clickedNode;
+        } else {
+          fromInput.value = clickedNode;
+          toInput.value = '';
+        }
+      } else {
+        hideTooltip();
+      }
+    });
+
+    // Hide tooltip when leaving map area
+    mapCanvas2.addEventListener('mouseleave', () => {
+      hideTooltip();
+      hoverNode = null;
+      drawNodes();
+    });
+  }
 }
 
 // This is for initialization on page load
